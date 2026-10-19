@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="pt-br">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+        <title>Projeto de Extensão — Entidade X</title>
+
+        <link rel="icon" href="data:," />
+
+        <!-- Tailwind CSS -->
+        <script src="https://cdn.tailwindcss.com"></script>
+
+        <!-- Manifest PWA: criaremos este arquivo adiante -->
+        <link rel="manifest" href="manifest.webmanifest" />
+
+        <meta name="theme-color" content="#0ea5e9" />
+    </head>
+
+    <body class="min-h-screen bg-slate-50 text-slate-800">
+        <!-- Atalho de acessibilidade para usuários de teclado -->
+        <a
+            href="#app"
+            class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 bg-sky-700 text-white px-3 py-2 rounded"
+        >
+            Ir para o conteúdo principal
+        </a>
+
+        <header class="max-w-5xl mx-auto px-4 py-6">
+            <h1 class="text-3xl font-bold text-sky-600">Projeto de Extensão — Entidade X</h1>
+
+            <p class="mt-1 text-slate-600">Site acessível, responsivo e instalável (PWA).</p>
+        </header>
+
+        <main id="app" tabindex="-1" class="max-w-5xl mx-auto px-4 pb-24">
+            <!-- Navegação responsiva -->
+            <nav class="mt-4" aria-label="Navegação principal">
+                <button
+                    type="button"
+                    class="md:hidden inline-flex items-center gap-2 rounded bg-sky-600 px-3 py-2 text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-sky-400"
+                    @click="alternarMenu"
+                    :aria-expanded="menuAberto.toString()"
+                    :aria-label="menuAberto ? 'Fechar menu' : 'Abrir menu'"
+                    aria-controls="menu-principal"
+                    @keydown.esc="fecharMenu"
+                    ref="botaoMenu"
+                >
+                    <span aria-hidden="true">☰</span> Menu
+                </button>
+
+                <ul
+                    id="menu-principal"
+                    class="mt-3 md:mt-0 md:flex md:gap-6"
+                    :class="menuAberto ? 'block' : 'hidden md:flex'"
+                    @keydown.esc="fecharMenu"
+                >
+                    <li>
+                        <a
+                            class="hover:underline focus:outline-none focus:ring-2 focus:ring-sky-400"
+                            href="#inicio"
+                            ref="primeiroLink"
+                            @click="aoClicarLink"
+                        >
+                            Início
+                        </a>
+                    </li>
+
+                    <li>
+                        <a
+                            class="hover:underline focus:outline-none focus:ring-2 focus:ring-sky-400"
+                            href="#sobre"
+                            @click="aoClicarLink"
+                        >
+                            Se Inscrever
+                        </a>
+                    </li>
+
+                    <li>
+                        <a
+                            class="hover:underline focus:outline-none focus:ring-2 focus:ring-sky-400"
+                            href="#contato"
+                            @click="aoClicarLink"
+                        >
+                            Inscritos
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+
+            <!-- Contador reativo -->
+            <section
+                id="inicio"
+                tabindex="-1"
+                aria-labelledby="sec-intro"
+                class="bg-white rounded-xl shadow p-6 mt-6"
+            >
+                <h2 id="sec-intro" class="text-xl font-semibold">Boas-vindas</h2>
+
+                <p class="mt-2">
+                    Contador:
+                    <strong class="text-sky-700">{{ contador }}</strong>
+                </p>
+
+                <button
+                    type="button"
+                    class="mt-4 inline-flex items-center gap-2 rounded-lg bg-sky-600 px-4 py-2 text-white hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-400"
+                    aria-label="Somar um ao contador"
+                    @click="contador++"
+                >
+                    Somar +1
+                </button>
+            </section>
+
+            <!-- Formulário de inscrição -->
+            <section
+                id="sobre"
+                tabindex="-1"
+                aria-labelledby="insc"
+                class="bg-white rounded-xl shadow p-6 mt-6"
+            >
+                <h2 id="insc" class="text-xl font-semibold">Inscrição em Atividade</h2>
+
+                <form class="mt-4 space-y-3" @submit.prevent="adicionarInscrito">
+                    <div>
+                        <label for="nome" class="block font-medium"> Nome do aluno </label>
+
+                        <input
+                            id="nome"
+                            v-model="form.nome"
+                            required
+                            class="mt-1 w-full rounded border-slate-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sky-400"
+                            aria-describedby="d-nome"
+                        />
+
+                        <small id="d-nome" class="text-slate-500"> Obrigatório </small>
+                    </div>
+
+                    <div>
+                        <label for="turma" class="block font-medium"> Turma </label>
+
+                        <input
+                            id="turma"
+                            v-model="form.turma"
+                            required
+                            class="mt-1 w-full rounded border-slate-300 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-sky-400"
+                            aria-describedby="d-turma"
+                        />
+
+                        <small id="d-turma" class="text-slate-500"> Ex.: 2º ano A </small>
+                    </div>
+
+                    <button
+                        type="submit"
+                        class="rounded bg-sky-600 px-4 py-2 text-white hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-400"
+                        aria-label="Adicionar inscrição"
+                    >
+                        Adicionar
+                    </button>
+                </form>
+            </section>
+
+            <!-- Lista de inscritos -->
+            <section
+                id="contato"
+                tabindex="-1"
+                aria-labelledby="lista"
+                class="bg-white rounded-xl shadow p-6 mt-6"
+            >
+                <h2 id="lista" class="text-xl font-semibold">Inscritos</h2>
+
+                <ul class="mt-3 space-y-2">
+                    <li
+                        v-for="(i, idx) in inscritos"
+                        :key="idx"
+                        class="flex items-center justify-between gap-3 border-b border-slate-200 pb-2"
+                    >
+                        <span>{{ i.nome }} — {{ i.turma }}</span>
+
+                        <button
+                            type="button"
+                            class="rounded bg-slate-200 px-3 py-1 hover:bg-slate-300 focus:outline-none focus:ring-2 focus:ring-sky-400"
+                            @click="removerInscrito(idx)"
+                            aria-label="Remover inscrito"
+                        >
+                            Remover
+                        </button>
+                    </li>
+                </ul>
+            </section>
+        </main>
+
+        <footer class="max-w-5xl mx-auto px-4 py-8 text-sm text-slate-500">
+            <p>© 2026 — Projeto de Extensão Front-end</p>
+        </footer>
+
+        <!-- Vue 3 -->
+        <script src="https://unpkg.com/vue@3/dist/vue.global.prod.js"></script>
+
+        <!-- Aplicação -->
+        <script src="main.js"></script>
+
+        <!-- Registro do Service Worker -->
+        <script>
+            if ("serviceWorker" in navigator) {
+                window.addEventListener("load", () => {
+                    navigator.serviceWorker.register("./sw.js");
+                });
+            }
+        </script>
+    </body>
+</html>
